@@ -70,7 +70,7 @@ workflows:
               only: master
       - docker-publish-latest:
           requires:
-            - build
+            - docker-build
           filters:
             branches:
               only: master
