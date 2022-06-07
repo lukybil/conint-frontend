@@ -1,21 +1,76 @@
-# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
-
-# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
-# See: https://circleci.com/docs/2.0/orb-intro/
 orbs:
-  node: circleci/node@4.7
+  node: circleci/node@5.0.2
+  docker: circleci/docker@1.5.0
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: lukybil/conint-frontend
+      DOCKERHUB_USERNAME: lukybil
+      DOCKERHUB_ACCESS_TOKEN: 16a59902-80a8-4d90-bae2-a96cd927ecaf
+    docker:
+      - image: circleci/buildpack-deps:stretch
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
-    jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '16.10'
-          # If you are using yarn, change the line below from "npm" to "yarn"
+jobs:
+  build-and-test:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
           pkg-manager: npm
+      - run:
+          command: npm run test
+          name: Run tests
+      - run:
+          command: npm run build
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  docker-build:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  docker-publish-latest:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_ACCESS_TOKEN"
+            docker push $IMAGE_NAME:latest
+
+workflows:
+  version: 2
+  test-build-deploy:
+    jobs:
+      - build-and-test
+      - docker-build:
+          filters:
+            branches:
+              only: master
+      - docker-publish-latest:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
