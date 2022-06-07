@@ -67,10 +67,10 @@ workflows:
       - docker-build:
           filters:
             branches:
-              only: master
+              only: main
       - docker-publish-latest:
           requires:
             - docker-build
           filters:
             branches:
-              only: master
+              only: main
