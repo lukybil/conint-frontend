@@ -22,22 +22,22 @@ jobs:
           command: npm run build
           name: Build app
       - persist_to_workspace:
-          root: ~/project
+          root: workspace/app
           paths:
             - .
   lint:
     executor: node/default
     steps:
+      - attach_workspace:
+          at: /tmp/workspace/app
       - run:
           command: npm run lint
           name: Run linter
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
   test:
     executor: node/default
     steps:
+      - attach_workspace:
+          at: /tmp/workspace/app
       - run:
           command: npm run test
           name: Run test
@@ -84,6 +84,9 @@ workflows:
           requires:
             - build
       - docker-build:
+          requires:
+            - lint
+            - test
           filters:
             branches:
               only: main
