@@ -21,7 +21,6 @@ jobs:
       - run:
           command: npm run build
           name: Build app
-      - run: mkdir -p app
       - persist_to_workspace:
           root: .
           paths:
@@ -31,6 +30,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
+      - run: cd /tmp/workspace
       - run:
           command: npm run lint
           name: Run linter
@@ -39,6 +39,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
+      - run: cd /tmp/workspace
       - run:
           command: npm run test
           name: Run test
