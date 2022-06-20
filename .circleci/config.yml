@@ -29,8 +29,7 @@ jobs:
     executor: node/default
     steps:
       - attach_workspace:
-          at: /tmp/workspace
-      - run: cd /tmp/workspace
+          at: /home/circleci/project
       - run:
           command: npm run lint
           name: Run linter
@@ -38,8 +37,7 @@ jobs:
     executor: node/default
     steps:
       - attach_workspace:
-          at: /tmp/workspace
-      - run: cd /tmp/workspace
+          at: /home/circleci/project
       - run:
           command: npm run test
           name: Run test
