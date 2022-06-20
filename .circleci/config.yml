@@ -14,7 +14,6 @@ executors:
 jobs:
   build:
     executor: node/default
-    working_directory: /tmp
     steps:
       - run: mkdir -p app
       - checkout
@@ -24,14 +23,14 @@ jobs:
           command: npm run build
           name: Build app
       - persist_to_workspace:
-          root: app
+          root: .
           paths:
             - .
   lint:
     executor: node/default
     steps:
       - attach_workspace:
-          at: /tmp/app
+          at: /tmp/workspace
       - run:
           command: npm run lint
           name: Run linter
@@ -39,7 +38,7 @@ jobs:
     executor: node/default
     steps:
       - attach_workspace:
-          at: /tmp/app
+          at: /tmp/workspace
       - run:
           command: npm run test
           name: Run test
