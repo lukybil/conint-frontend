@@ -15,13 +15,13 @@ jobs:
   build:
     executor: node/default
     steps:
-      - run: mkdir -p app
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
           command: npm run build
           name: Build app
+      - run: mkdir -p app
       - persist_to_workspace:
           root: .
           paths:
