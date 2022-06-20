@@ -12,15 +12,28 @@ executors:
       - image: circleci/buildpack-deps:stretch
 
 jobs:
-  build-and-test:
+  lint:
     executor: node/default
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
+          command: npm run lint
+          name: Run linter
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  test:
+    executor: node/default
+    steps:
+      - run:
           command: npm run test
-          name: Run tests
+          name: Run test
+  build:
+    executor: node/default
+    steps:
       - run:
           command: npm run build
           name: Build app
@@ -63,7 +76,9 @@ workflows:
   version: 2
   test-build-deploy:
     jobs:
-      - build-and-test
+      - lint
+      - test
+      - build
       - docker-build:
           filters:
             branches:
