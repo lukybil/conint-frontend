@@ -15,7 +15,7 @@ test('renders Token input field', () => {
 });
 
 test('renders Card', () => {
-  render(<Card card={{ id: '0', race: 6, damage: 85, element: 1 }} />);
+  render(<Card card={{ id: 0, race: 6, damage: 85, element: 1 }} />);
   expect(screen.getByText('Water Kraken')).toBeInTheDocument();
   expect(screen.getByText('Kraken')).toBeInTheDocument();
   expect(screen.getByText('85')).toBeInTheDocument();

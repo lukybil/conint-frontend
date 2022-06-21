@@ -17,7 +17,7 @@ import Wizard from './img/wizard.jpg';
 //Spell, Goblin, Dragon, Wizard, Orc, Knight, Kraken, Elf
 
 type Card = {
-  id: string;
+  id: number;
   name?: string;
   race: number;
   damage: number;
@@ -61,7 +61,7 @@ export function Card({ card }: CardProps) {
       break;
     default:
       break;
-  } //<img src={racesImages[race]} alt=''/>
+  }
   return (
     <div className="Card">
       <div className="image-container">
@@ -99,7 +99,6 @@ function App() {
   }, []);
 
   const getCards = () => {
-    //fetch("/api/cards", {
     fetch('/api/cards', {
       headers: {
         Authorization: 'Basic ' + userToken(),
@@ -111,12 +110,10 @@ function App() {
           setIsLoaded(true);
           setItems(result);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           setIsLoaded(true);
           setError(error);
+          setItems([]);
         }
       );
   };
@@ -124,7 +121,7 @@ function App() {
   const itemsToCards = () => {
     return items.map((card) => {
       return (
-        <Grid key={card.id} item xs={6} lg={3}>
+        <Grid key={card.id} item xs={12} md={6} lg={3}>
           <Card card={card} />
         </Grid>
       );
@@ -142,18 +139,12 @@ function App() {
 
   return (
     <div className="App">
-      <header>
+      <header style={{ marginBottom: 30 }}>
         <input type="text" placeholder="User token" id="input-userToken" />
         <button onClick={(e) => getCards()}>Get Cards</button>
       </header>
       <div className="container">
-        <Grid
-          container
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
           {itemsToCards()}
         </Grid>
       </div>
