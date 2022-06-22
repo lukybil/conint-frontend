@@ -44,13 +44,13 @@ jobs:
     executor: docker-publisher
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Build Docker image
           command: |
             docker build -t $IMAGE_NAME:latest .
-      - setup_remote_docker
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Publish Docker image to Docker Hub
           command: |
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_ACCESS_TOKEN"
             docker push $IMAGE_NAME:latest
