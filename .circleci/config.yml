@@ -43,6 +43,7 @@ jobs:
   deploy:
     executor: docker-publisher
     steps:
+      - checkout
       - run:
           name: Build Docker image
           command: |
