@@ -7,7 +7,6 @@ executors:
     environment:
       IMAGE_NAME: lukybil/conint-frontend
       DOCKERHUB_USERNAME: lukybil
-      DOCKERHUB_ACCESS_TOKEN: 16a59902-80a8-4d90-bae2-a96cd927ecaf
     docker:
       - image: circleci/buildpack-deps:stretch
 
