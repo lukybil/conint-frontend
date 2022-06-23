@@ -140,7 +140,7 @@ function App() {
   return (
     <div className="App">
       <header style={{ marginBottom: 30 }}>
-        <input type="text" placeholder="User token" id="input-userToken" />
+        <input type="text" placeholder="User toke" id="input-userToken" />
         <button onClick={(e) => getCards()}>Get Cards</button>
       </header>
       <div className="container">
