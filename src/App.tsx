@@ -14,7 +14,7 @@ import Spell from './img/spell.jpg';
 import Wizard from './img/wizard.jpg';
 
 //Normal, Water, Fire
-//Spell, Goblin, Dragon, Wizard, Orc, Knight, Kraken, Elf
+//Spell, Goblin, Dragon, Wizard, Orc, Knight, Kraken, Elff
 
 type Card = {
   id: number;
